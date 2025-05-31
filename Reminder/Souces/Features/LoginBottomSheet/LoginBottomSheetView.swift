@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 class LoginBottomSheetView: UIView{
+    public weak var delegate: LoginBottomSheetViewDelegate?
     
     private let handleArea: UIView = {
        let view = UIView()
@@ -22,6 +23,7 @@ class LoginBottomSheetView: UIView{
         let title = UILabel()
         title.text = "login.label.title".localized
         title.textColor = Colors.gray100
+        title.font = Typography.subHeading
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
     }()
@@ -63,9 +65,12 @@ class LoginBottomSheetView: UIView{
         let button = UIButton(type: .system)
         button.setTitle("login.button.tittle".localized, for: .normal)
         button.backgroundColor = Colors.primaryBase
-        button.setTitleColor(Colors.gray800, for: .normal)
+        button.tintColor = Colors.gray800
         button.layer.cornerRadius = Metrics.medium
+        button.titleLabel?.font = Typography.subHeading
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.addTarget(self, action: #selector(loginButtomDidTapped), for: .touchUpInside)
         return button
     }()
     
@@ -97,12 +102,13 @@ class LoginBottomSheetView: UIView{
     private func setupConstrainsts() {
         
         NSLayoutConstraint.activate([
+            
             handleArea.topAnchor.constraint(equalTo: self.topAnchor, constant: Metrics.small),
             handleArea.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             handleArea.widthAnchor.constraint(equalToConstant: 40),
             handleArea.heightAnchor.constraint(equalToConstant: 6),
             
-            titleLable.topAnchor.constraint(equalTo: handleArea.bottomAnchor, constant: Metrics.medium),
+            titleLable.topAnchor.constraint(equalTo: handleArea.bottomAnchor, constant: Metrics.huge),
             titleLable.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Metrics.medium),
             
             emailLabel.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: Metrics.medium),
@@ -111,6 +117,7 @@ class LoginBottomSheetView: UIView{
             emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: Metrics.little),
             emailTextField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Metrics.medium),
             emailTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Metrics.medium),
+            emailTextField.heightAnchor.constraint(equalToConstant: Metrics.inputSize),
             
             passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: Metrics.medium),
             passwordLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Metrics.medium),
@@ -118,11 +125,22 @@ class LoginBottomSheetView: UIView{
             passwordTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: Metrics.little),
             passwordTextField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Metrics.medium),
             passwordTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Metrics.medium),
+            passwordTextField.heightAnchor.constraint(equalToConstant: Metrics.inputSize),
             
             loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: Metrics.medium),
             loginButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Metrics.medium),
             loginButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Metrics.medium),
-            loginButton.heightAnchor.constraint(equalToConstant: Metrics.huge)
+            loginButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Metrics.huge),
+            loginButton.heightAnchor.constraint(equalToConstant: Metrics.buttonSize)
         ])
+    }
+    
+    @objc
+    private func loginButtomDidTapped() {
+        guard let user = emailTextField.text, let password = passwordTextField.text else {
+            return
+        }
+
+        delegate?.sendLoginData(user: user, password: password)
     }
 }

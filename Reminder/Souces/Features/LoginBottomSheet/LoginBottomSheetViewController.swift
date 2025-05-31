@@ -11,13 +11,17 @@ import UIKit
 class LoginBottomSheetViewController: UIViewController {
     
     let loginView =  LoginBottomSheetView()
+    let viewModel = LoginBottomSheetViewModel()
     var handleAreaHeight: CGFloat = 50
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loginView.delegate = self
+        
         setupUI()
         setupGesture()
+        bindViewModel()
     }
     
     private func setupUI() {
@@ -44,6 +48,12 @@ class LoginBottomSheetViewController: UIViewController {
         
     }
     
+    private func bindViewModel() {
+        viewModel.successResult = { [weak self] in
+            print("Chegou na view controller")
+        }
+    }
+    
     func animateShow(completion: (() -> Void)? = nil) {
         self.view.layoutIfNeeded()
         loginView.transform = CGAffineTransform(translationX: 0, y: loginView.frame.height)
@@ -51,5 +61,11 @@ class LoginBottomSheetViewController: UIViewController {
             self.loginView.transform = .identity
             self.view.layoutIfNeeded()
         }) { _ in completion?() }
+    }
+}
+
+extension LoginBottomSheetViewController: LoginBottomSheetViewDelegate {
+    func sendLoginData(user: String, password: String) {
+        viewModel.doAuth(usernameLogin: user, password: password)
     }
 }
