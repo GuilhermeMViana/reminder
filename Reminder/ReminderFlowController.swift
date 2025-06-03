@@ -12,13 +12,14 @@ class ReminderFlowController {
     
 //MARK: - Properties
     private var navigationController: UINavigationController?
-    // private let viewControllerFactory
+    private let viewControllerFactory: ViewControllersFactoryProtocol
 //MARK: - Init
-    public init(){}
+    public init(){
+        self.viewControllerFactory = ViewControllersFactory()
+    }
 //MARK: - startFlow
     func start()-> UINavigationController?{
-        // let startViewController: viewControllerFactory
-        let startViewController = SplashViewController(flowDelegate: self)
+        let startViewController = viewControllerFactory.makeSplashViewController(flowDelegate: self)
         self.navigationController = UINavigationController(rootViewController: startViewController)
         return navigationController
     }
@@ -27,7 +28,7 @@ class ReminderFlowController {
 //MARK: - Splash
 extension ReminderFlowController: SplashFlowDelegate {
     func openLoginBottomSheet() {
-        let loginBottomSheet = LoginBottomSheetViewController(flowDelegate: self)
+        let loginBottomSheet = viewControllerFactory.makeLoginBottomSheetViewController(flowDelegate: self)
         loginBottomSheet.modalPresentationStyle = .overCurrentContext
         loginBottomSheet.modalTransitionStyle = .crossDissolve
         self.navigationController?.present(loginBottomSheet, animated: false) {
@@ -40,7 +41,7 @@ extension ReminderFlowController: SplashFlowDelegate {
 //MARK: - LoginBottomSheet
 extension ReminderFlowController: LoginBottomSheetFlowDelegate {
     func navigateToHome() {
-        self.navigationController?.dismiss(animated: true)
+        self.navigationController?.dismiss(animated: false)
         //let homeViewController = HOMEViewController()
         let homeViewController = UIViewController()
         homeViewController.view.backgroundColor = .systemBlue
