@@ -62,7 +62,10 @@ class LoginBottomSheetViewController: UIViewController {
     private func bindViewModel() {
         viewModel.successResult = { [weak self] usernameLogin in
             self?.presentSaveUserLoginAlert(email: usernameLogin)
-//            self?.flowDelegate?.navigateToHome()
+        }
+        
+        viewModel.errorResult = { [weak self] error in
+            self?.presentErrorAlert(message: error)
         }
     }
     
@@ -82,6 +85,17 @@ class LoginBottomSheetViewController: UIViewController {
         alert.addAction(saveAction)
         alert.addAction(denyAction)
         self.present(alert, animated: true)
+    }
+    
+    private func presentErrorAlert(message: String){
+        let alert = UIAlertController(title: "Erro", message: message, preferredStyle: .alert)
+        
+        let retryAction = UIAlertAction(title: "Tentar novamente", style: .default)
+        
+        alert.addAction(retryAction)
+        
+        self.present(alert, animated: true)
+        
     }
     
     func animateShow(completion: (() -> Void)? = nil) {
