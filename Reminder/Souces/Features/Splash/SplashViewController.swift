@@ -26,7 +26,16 @@ class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupGesture()
+        decideNavigationFlow()
         setup()
+    }
+    
+    private func decideNavigationFlow() {
+        if let user = UserDefaultsManager.loadUser(), user.isSaved {
+            flowDelegate?.navigateToHome()
+        } else {
+            showLoginBottomSheet()
+        }
     }
     
     private func setup() {

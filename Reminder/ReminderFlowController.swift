@@ -33,9 +33,10 @@ extension ReminderFlowController: SplashFlowDelegate {
         loginBottomSheet.modalTransitionStyle = .crossDissolve
         self.navigationController?.present(loginBottomSheet, animated: false) {
             loginBottomSheet.animateShow()
-            
         }
     }
+    
+    
 }
 
 //MARK: - LoginBottomSheet

@@ -9,14 +9,14 @@ import Foundation
 import FirebaseAuth
 
 class LoginBottomSheetViewModel {
-    var successResult: (() -> Void)?
+    var successResult: ((String) -> Void)?
     
     func doAuth(usernameLogin: String, password: String){
         Auth.auth().signIn(withEmail: usernameLogin, password: password) { [weak self] authResult, error in
             if let error = error {
                 print("Dados inválidos: \(error.localizedDescription)")
             } else {
-                self?.successResult?()
+                self?.successResult?(usernameLogin)
             }
         }
             
